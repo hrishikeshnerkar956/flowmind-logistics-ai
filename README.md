@@ -31,16 +31,18 @@ To make this a true winning demo, the system includes:
 - **Live Recharts Telemetry**: Dynamic React charts graph the current network's health boundaries over time to visually prove stabilization after Agent intervention.
 - **Dockerized Environment**: The entire monolithic Agentic loop can be deployed anywhere with `docker-compose up`.
 
-## Assumptions
+## Phase 12: Dynamic Configuration (Removing Hardcoding)
+To make the platform production-ready and fully dynamic, we will extract all hardcoded values into external configurations:
 
-- We assume a continuous stream of structured GPS and scanning hardware data.
-- 1 simulation step abstracts 1 hour of physical operations.
-- Carrier reliability drops and congestion spikes are stochastic but follow a mean-reverting path in the simulation.
-
-## Trade-offs
-
-- **Memory Storage**: We used SQLite for ease of deployment. In a production environment spanning 10M+ shipments, a distributed cache like Redis or temporal database like TimescaleDB would be necessary.
-- **Deterministic Rules vs live LLM Reasoning**: To maintain millisecond latency and strictly prevent LLM hallucinations from making multi-million dollar physical logistics errors, the `DecisionEngine` uses exact heuristic evaluation mapped to deterministic generative strings instead of calling a live GPT-4 instance directly on the actuation layer.
+1. **Environment Variables (`.env`)**:
+   - Replace the hardcoded `http://localhost:8000/api` in the React frontend with `import.meta.env.VITE_API_URL`.
+   - Store API keys, Database URLs, and Server Ports in a backend `.env`.
+2. **Dynamic Rule Thresholds (`config.py`)**:
+   - Extract "magic numbers" in the `decision_engine.py` (e.g. `final_risk > 0.90`, `carrier_reliability < 0.70`) into a Pydantic Settings class so they can be tweaked on the fly via environment variables without editing Python code.
+3. **Externalized Simulation Data (`assets/logistics_network.json`)**:
+   - Move the hardcoded lists of cities (`"Mumbai", "Delhi", ...`) and carriers (`"FedEx", "DHL", ...`) in `shipment_generator.py` into a configurable JSON schema file. This allows admins to add new cities/carriers without touching the engine logic.
+4. **Live LLM API Integration**:
+   - Replace the hardcoded `/agent/decision_engine.py` text generation templates with a live Langchain call using `GROQ_API_KEY` or `OPENAI_API_KEY` from the environment.
 
 ## Running the Application
 
