@@ -1,0 +1,26 @@
+# Environments
+venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+build/
+.npm/
+.eslintcache
+
+# Data (Don't commit active memory or huge simulation files if any)
+backend/data/*.json
+backend/data/*.csv
+backend/data/*.db
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
