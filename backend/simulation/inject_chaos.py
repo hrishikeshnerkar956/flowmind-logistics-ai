@@ -2,15 +2,16 @@ import json
 import os
 import random
 from datetime import datetime
+from core.config import settings
 
-def inject_chaos(data_dir="data", chaos_type="warehouse_congestion"):
+def inject_chaos(chaos_type="warehouse_congestion"):
     """
     Manually overrides the system state to simulate severe network events.
     Types: 
         - 'warehouse_congestion': Maxes out random warehouses.
         - 'carrier_failure': Drops a major carrier's reliability to < 40%.
     """
-    state_file = os.path.join(data_dir, "system_state.json")
+    state_file = settings.STATE_PATH
     
     if not os.path.exists(state_file):
         return {"error": "Simulation not running"}
@@ -40,4 +41,4 @@ def inject_chaos(data_dir="data", chaos_type="warehouse_congestion"):
 
 if __name__ == "__main__":
     # Test
-    print(inject_chaos(data_dir="../data", chaos_type="warehouse_congestion"))
+    print(inject_chaos(chaos_type="warehouse_congestion"))

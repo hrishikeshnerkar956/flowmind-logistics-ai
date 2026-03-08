@@ -3,6 +3,7 @@ from tools.reroute_tool import reroute_shipment
 from tools.carrier_switch_tool import switch_carrier
 from tools.prioritize_tool import prioritize_shipment
 from tools.alert_tool import alert_operator
+from core.config import settings
 
 class DecisionEngine:
     def __init__(self):
@@ -32,18 +33,19 @@ class DecisionEngine:
         reasoning = ""
         
         # 2. Heuristic Rules Policy Logic mapping to advanced LLM-style Generation
-        if final_risk > 0.90:
+        if final_risk > settings.RISK_CRITICAL_THRESHOLD:
             action_data = alert_operator(shipment_id=shipment_id, reason=f"Extremely high risk score: {final_risk:.2f}")
             reasoning = self._generate_llm_reasoning("ALERT", shipment_id, final_risk, warehouse_load, carrier_reliability)
-        elif delay_prob > 0.85:
+        elif delay_prob > settings.RISK_HIGH_THRESHOLD:
             action_data = reroute_shipment(shipment_id=shipment_id, current_distance=distance_km)
             reasoning = self._generate_llm_reasoning("REROUTE", shipment_id, final_risk, warehouse_load, carrier_reliability)
-        elif carrier_reliability < 0.70:
+        elif carrier_reliability < settings.CARRIER_FAIL_THRESHOLD:
             action_data = switch_carrier(shipment_id=shipment_id, current_carrier=shipment_data["carrier"])
             reasoning = self._generate_llm_reasoning("SWITCH_CARRIER", shipment_id, final_risk, warehouse_load, carrier_reliability)
-        elif delay_prob > 0.65 and shipment_data.get("priority") != "High":
+        elif delay_prob > settings.RISK_WARNING_THRESHOLD and shipment_data.get("priority") != "High":
             action_data = prioritize_shipment(shipment_id=shipment_id)
             reasoning = self._generate_llm_reasoning("PRIORITIZE", shipment_id, final_risk, warehouse_load, carrier_reliability)
+            
             
         if action_data:
             return {

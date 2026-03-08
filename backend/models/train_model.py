@@ -6,11 +6,12 @@ import joblib
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
+from core.config import settings
 
-def train_delay_model(data_dir="../data", model_dir="../data"):
-    shipments_file = os.path.join(data_dir, "shipments.csv")
-    state_file = os.path.join(data_dir, "system_state.json")
-    model_file = os.path.join(model_dir, "delay_model.pkl")
+def train_delay_model(model_dir="data"):
+    shipments_file = settings.SHIPMENTS_PATH
+    state_file = settings.STATE_PATH
+    model_file = settings.MODEL_PATH
     
     # Load data
     df = pd.read_csv(shipments_file)

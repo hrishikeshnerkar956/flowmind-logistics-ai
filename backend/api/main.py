@@ -24,8 +24,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-sim_engine = SimulationEngine(data_dir="data")
-agent = LogisticsAgent(data_dir="data")
+sim_engine = SimulationEngine()
+agent = LogisticsAgent()
 is_running = True
 
 async def run_logistics_loop():
@@ -92,7 +92,7 @@ class ChaosRequest(BaseModel):
 def trigger_chaos(req: ChaosRequest):
     from simulation.inject_chaos import inject_chaos
     try:
-        result = inject_chaos(data_dir=sim_engine.data_dir, chaos_type=req.chaos_type)
+        result = inject_chaos(chaos_type=req.chaos_type)
         return result
     except Exception as e:
         return {"error": str(e)}
@@ -100,8 +100,9 @@ def trigger_chaos(req: ChaosRequest):
 @app.get("/api/agent-logs")
 def get_agent_decisions(limit: int = 20):
     try:
+        from core.config import settings
         # Re-initialize specific read connection to guarantee fresh logs
-        memory = AgentMemory(db_path=os.path.join(agent.data_dir, "agent_memory.db"))
+        memory = AgentMemory(db_path=settings.DB_PATH)
         logs = memory.get_recent_decisions(limit=limit)
         return logs
     except Exception as e:

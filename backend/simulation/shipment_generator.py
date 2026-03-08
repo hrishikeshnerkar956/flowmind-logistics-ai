@@ -5,18 +5,22 @@ import uuid
 import os
 from datetime import datetime, timedelta
 import json
+from core.config import settings
 
-CITIES = ["Mumbai", "Delhi", "Bangalore", "Hyderabad", "Pune"]
-CARRIERS = ["FastTrack", "SafeTransit", "BlueDart_Mock", "SpeedyLogistics"]
+def load_network_config():
+    with open(settings.NETWORK_JSON_PATH, "r") as f:
+        data = json.load(f)
+    return data["cities"], data["carriers"]
+
+CITIES, CARRIERS = load_network_config()
 WAREHOUSES = {city: f"WH_{city}" for city in CITIES}
 
 class SimulationEngine:
-    def __init__(self, num_shipments=2000, data_dir="data"):
+    def __init__(self, num_shipments=2000):
         self.num_shipments = num_shipments
-        self.data_dir = data_dir
-        os.makedirs(self.data_dir, exist_ok=True)
-        self.shipments_file = os.path.join(self.data_dir, "shipments.csv")
-        self.state_file = os.path.join(self.data_dir, "system_state.json")
+        os.makedirs(settings.DATA_DIR, exist_ok=True)
+        self.shipments_file = settings.SHIPMENTS_PATH
+        self.state_file = settings.STATE_PATH
         self.df = None
         self.warehouse_load = {w: random.uniform(0.4, 0.9) for w in WAREHOUSES.values()}
         self.carrier_reliability = {c: random.uniform(0.7, 0.99) for c in CARRIERS}

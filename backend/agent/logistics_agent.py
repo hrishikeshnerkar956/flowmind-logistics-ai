@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import os
+from core.config import settings
 from agent.decision_engine import DecisionEngine
 from agent.memory import AgentMemory
 
@@ -9,12 +10,11 @@ class LogisticsAgent:
     Implements a full Observe -> Reason -> Decide -> Act -> Learn loop.
     Reads current backend state, runs ML inference, takes actions, and records them.
     """
-    def __init__(self, data_dir="data"):
-        self.data_dir = data_dir
+    def __init__(self):
         self.decision_engine = DecisionEngine()
-        self.memory = AgentMemory(db_path=os.path.join(self.data_dir, "agent_memory.db"))
-        self.shipments_file = os.path.join(self.data_dir, "shipments.csv")
-        self.state_file = os.path.join(self.data_dir, "system_state.json")
+        self.memory = AgentMemory(db_path=settings.DB_PATH)
+        self.shipments_file = settings.SHIPMENTS_PATH
+        self.state_file = settings.STATE_PATH
         
     def run_agent_loop(self):
         """
