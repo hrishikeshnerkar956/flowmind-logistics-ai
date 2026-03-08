@@ -27,6 +27,7 @@ The core cycle runs continuously in the background of the FastAPI app:
 
 To make this a true winning demo, the system includes:
 - **Interactive Chaos Engine (`POST /api/chaos`)**: A dedicated interface inside the React UI allowing judges to press an "Inject Chaos" button. This forces a simulated network crash (e.g. 99% warehouse load), immediately displaying the Agent's autonomous recovery time.
+- **Geographic Map Visualization (`react-leaflet`)**: A prominent, live map of India plotting active nodes and dynamically drawing network route geometries. When the underlying AI flags a route as "High Risk", the route visualization turns to a dashed red line to immediately alert operators visually.
 - **LLM-style Explanations (XAI)**: The deterministic strings in the reasoning phase produce nuanced, human-readable rationalizations mimicking natural generative AI outputs.
 - **Live Recharts Telemetry**: Dynamic React charts graph the current network's health boundaries over time to visually prove stabilization after Agent intervention.
 - **Dockerized Environment**: The entire monolithic Agentic loop can be deployed anywhere with `docker-compose up`.

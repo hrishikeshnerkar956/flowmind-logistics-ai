@@ -1,6 +1,7 @@
 import { BeakerIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import AgentLogList from './components/AgentLogList';
 import MetricsChart from './components/MetricsChart';
+import NetworkMap from './components/NetworkMap';
 import ShipmentTable from './components/ShipmentTable';
 import { useAgentTelemetry } from './hooks/useAgentTelemetry';
 
@@ -54,8 +55,9 @@ function App() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
 
-        {/* Left Col: Shipments */}
+        {/* Left Col: Shipments & Map */}
         <div className="xl:col-span-2 space-y-6">
+          <NetworkMap shipments={shipments} />
           <ShipmentTable shipments={shipments} />
         </div>
 
